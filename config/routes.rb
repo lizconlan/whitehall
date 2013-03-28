@@ -40,6 +40,7 @@ Whitehall::Application.routes.draw do
       resources :past_foreign_secretaries, path: "past-foreign-secretaries", only: [:index, :show]
     end
 
+    match "/email-signup" => "home#email_signup"
     match '/feed' => 'home#feed', defaults: { format: :atom }, constraints: { format: :atom }, as: :atom_feed
     match '/tour' => redirect("/tour", prefix: "")
 
