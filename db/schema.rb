@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130405110012) do
+ActiveRecord::Schema.define(:version => 20130402113858) do
 
   create_table "access_and_opening_times", :force => true do |t|
     t.text     "body"
@@ -819,6 +819,29 @@ ActiveRecord::Schema.define(:version => 20130405110012) do
   end
 
   add_index "policy_groups", ["slug"], :name => "index_policy_groups_on_slug"
+
+  create_table "promotional_feature_items", :force => true do |t|
+    t.integer  "promotional_feature_id"
+    t.text     "summary"
+    t.string   "image"
+    t.string   "image_alt_text"
+    t.string   "title"
+    t.string   "title_url"
+    t.boolean  "double_width",           :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "promotional_feature_items", ["promotional_feature_id"], :name => "index_promotional_feature_items_on_promotional_feature_id"
+
+  create_table "promotional_features", :force => true do |t|
+    t.integer  "organisation_id"
+    t.string   "title"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "promotional_features", ["organisation_id"], :name => "index_promotional_features_on_organisation_id"
 
   create_table "recent_edition_openings", :force => true do |t|
     t.integer  "edition_id", :null => false
