@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130402113858) do
+ActiveRecord::Schema.define(:version => 20130408095613) do
 
   create_table "access_and_opening_times", :force => true do |t|
     t.text     "body"
@@ -833,6 +833,16 @@ ActiveRecord::Schema.define(:version => 20130402113858) do
   end
 
   add_index "promotional_feature_items", ["promotional_feature_id"], :name => "index_promotional_feature_items_on_promotional_feature_id"
+
+  create_table "promotional_feature_links", :force => true do |t|
+    t.integer  "promotional_feature_item_id"
+    t.string   "url"
+    t.string   "text"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "promotional_feature_links", ["promotional_feature_item_id"], :name => "index_promotional_feature_links_on_promotional_feature_item_id"
 
   create_table "promotional_features", :force => true do |t|
     t.integer  "organisation_id"
