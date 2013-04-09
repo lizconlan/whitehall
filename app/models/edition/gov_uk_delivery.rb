@@ -1,8 +1,3 @@
-# encoding: utf-8
-require 'uri'
-require 'erb'
-require 'gds_api/exceptions'
-
 module Edition::GovUkDelivery
   include Rails.application.routes.url_helpers
   extend ActiveSupport::Concern
@@ -78,19 +73,5 @@ module Edition::GovUkDelivery
 
   def notify_govuk_delivery
     Delayed::Job.enqueue GovUkDeliveryNotificationJob.new(id)
-  end
-
-  def govuk_delivery_email_body
-    url = document_url(self, host: Whitehall.public_host)
-    ERB.new(%q{
-<div class="rss_item" style="margin-bottom: 2em;">
-  <div class="rss_title" style="font-weight: bold; font-size: 120%; margin: 0 0 0.3em; padding: 0;">
-    <a href="<%= url %>"><%= title %></a>
-  </div>
-  <div class="rss_pub_date" style="font-size: 90%; margin: 0 0 0.3em; padding: 0; color: #666666; font-style: italic;"><%= public_timestamp %></div>
-  <br />
-  <div class="rss_description" style="margin: 0 0 0.3em; padding: 0;"><%= summary %></div>
-</div>
-}.encode("UTF-8")).result(binding)
   end
 end
