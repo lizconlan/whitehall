@@ -90,9 +90,9 @@ module Edition::GovUkDelivery
     end
   end
 
-def govuk_delivery_email_body
-  url = document_url(self, host: Whitehall.public_host)
-  ERB.new(%q{
+  def govuk_delivery_email_body
+    url = document_url(self, host: Whitehall.public_host)
+    ERB.new(%q{
 <div class="rss_item" style="margin-bottom: 2em;">
   <div class="rss_title" style="font-weight: bold; font-size: 120%; margin: 0 0 0.3em; padding: 0;">
     <a href="<%= url %>"><%= title %></a>
