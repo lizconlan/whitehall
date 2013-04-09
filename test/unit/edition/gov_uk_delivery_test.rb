@@ -51,17 +51,18 @@ class Edition::GovUkDeliveryTest < ActiveSupport::TestCase
     assert_equal 'UTF-8', body.encoding.name
   end
 
+  test '#govuk_delivery_email_body should link to full URL in email' do
+    publication = create(:publication)
+    publication.first_published_at = Time.zone.now
+    publication.major_change_published_at = Time.zone.now
+
+    assert_match /#{Whitehall.public_host}/, publication.govuk_delivery_email_body
+  end
+
   test '#notify_govuk_delivery sends a notification via the govuk delivery client when there are topics' do
     policy = create(:policy, topics: [create(:topic)])
     policy.stubs(:govuk_delivery_email_body).returns('email body')
     Whitehall.govuk_delivery_client.expects(:notify).with(policy.govuk_delivery_tags, policy.title, 'email body')
-
-    policy.notify_govuk_delivery
-  end
-
-  test '#notify_govuk_delivery does nothing if the change is minor' do
-    policy = create(:policy, topics: [create(:topic)], minor_change: true)
-    Whitehall.govuk_delivery_client.expects(:notify).never
 
     policy.notify_govuk_delivery
   end
@@ -80,9 +81,8 @@ class Edition::GovUkDeliveryTest < ActiveSupport::TestCase
     assert_nothing_raised { policy.notify_govuk_delivery }
   end
 
-  test "should notify govuk_delivery on publishing policies" do
-    Edition::AuditTrail.whodunnit = create(:user)
-    policy = create(:policy, topics: [create(:topic), create(:topic)])
+  test "notifies gov uk delivery after publishing a policy" do
+    policy = create(:policy)
     policy.first_published_at = Time.zone.now
     policy.major_change_published_at = Time.zone.now
 
@@ -90,17 +90,16 @@ class Edition::GovUkDeliveryTest < ActiveSupport::TestCase
     policy.publish!
   end
 
-  test "should notify govuk_delivery on publishing news articles" do
+  test "notifies gov uk delivery after publishing a news article" do
     news_article = create(:news_article)
     news_article.first_published_at = Time.zone.now
     news_article.major_change_published_at = Time.zone.now
-
 
     news_article.expects(:notify_govuk_delivery).once
     news_article.publish!
   end
 
-  test "should notify govuk_delivery on publishing publications" do
+  test "notifies gov uk delivery after publishing a publication" do
     publication = create(:publication)
     publication.first_published_at = Time.zone.now
     publication.major_change_published_at = Time.zone.now
@@ -109,11 +108,12 @@ class Edition::GovUkDeliveryTest < ActiveSupport::TestCase
     publication.publish!
   end
 
-  test "should link to full URL in email" do
-    publication = create(:publication)
-    publication.first_published_at = Time.zone.now
-    publication.major_change_published_at = Time.zone.now
+  test 'does not notify gov uk delivery if the change was minor' do
+    policy = create(:policy, minor_change: true)
+    policy.first_published_at = Time.zone.now
+    policy.major_change_published_at = Time.zone.now
 
-    assert_match /#{Whitehall.public_host}/, publication.govuk_delivery_email_body
+    policy.expects(:notify_govuk_delivery).never
+    policy.publish!
   end
 end
