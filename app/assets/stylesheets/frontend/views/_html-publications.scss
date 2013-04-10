@@ -61,9 +61,6 @@
         margin: $gutter-half 0 20px;
         color: $white;
       }
-      .lead-in {
-        text-transform: capitalize;
-      }
     }
   }
   
@@ -118,7 +115,7 @@
         color: black;
         margin-top: $gutter;
         @include media(tablet){
-          margin-top: $gutter * 2;
+          margin-top: ($gutter*2) + $gutter-two-thirds;
         }
       }
       p, ul, ol {
