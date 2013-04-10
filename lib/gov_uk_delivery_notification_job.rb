@@ -18,11 +18,17 @@ class GovUkDeliveryNotificationJob < Struct.new(:id)
   def email_body
 %Q(<div class="rss_item" style="margin-bottom: 2em;">
   <div class="rss_title" style="font-weight: bold; font-size: 120%; margin: 0 0 0.3em; padding: 0;">
-    <a href="#{edition_url}">#{edition.title}</a>
+    <a href="#{edition_url}">#{escape(edition.title)}</a>
   </div>
   <div class="rss_pub_date" style="font-size: 90%; margin: 0 0 0.3em; padding: 0; color: #666666; font-style: italic;">#{edition.public_timestamp}</div>
   <br />
-  <div class="rss_description" style="margin: 0 0 0.3em; padding: 0;">#{edition.summary}</div>
+  <div class="rss_description" style="margin: 0 0 0.3em; padding: 0;">#{escape(edition.summary)}</div>
 </div>)
+  end
+
+  private
+
+  def escape(string)
+    ERB::Util.html_escape(string)
   end
 end
